@@ -1,15 +1,15 @@
 <template>
-  <hello-world />
+  <stepper />
 </template>
 
 <script>
-  import HelloWorld from '../components/HelloWorld'
+import Stepper from '../components/Stepper.vue';
 
-  export default {
-    name: 'Home',
+export default {
+  name: 'Home',
 
-    components: {
-      HelloWorld,
-    },
-  }
+  components: {
+    Stepper,
+  },
+};
 </script>
