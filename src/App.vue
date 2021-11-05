@@ -6,7 +6,7 @@
           alt="ByteCrypt Logo"
           class="shrink mr-2"
           contain
-          src="https://www.freeiconspng.com/thumbs/key-icon/key-icon-4.png"
+          src="/key.svg"
           transition="scale-transition"
           width="40"
         />
@@ -24,8 +24,6 @@
 export default {
   name: 'App',
 
-  data: () => ({
-    //
-  }),
-};
+  data: () => ({}),
+}
 </script>
