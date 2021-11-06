@@ -12,6 +12,8 @@
         />
         <span>ByteCrypt</span>
       </div>
+      <v-spacer></v-spacer>
+      <i class="fab fa-github fa-2x mr-2 github-icon" @click="goToGitHub"></i>
     </v-app-bar>
 
     <v-main>
@@ -25,5 +27,17 @@ export default {
   name: 'App',
 
   data: () => ({}),
+  methods: {
+    goToGitHub() {
+      window
+        .open('https://github.com/karolkrasnowski/ByteCrypt', '_blank')
+        .focus()
+    },
+  },
 }
 </script>
+<style scoped>
+.github-icon {
+  cursor: pointer;
+}
+</style>
