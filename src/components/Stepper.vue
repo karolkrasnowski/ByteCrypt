@@ -9,41 +9,60 @@
       <v-btn text @click="decryptionMode">Decrypt</v-btn>
     </v-stepper-content>
 
-    <v-stepper-step :complete="currentStep > 2" step="2"
-      >Choose a file</v-stepper-step
-    >
+    <v-form v-model="fileValid">
+      <v-stepper-step :complete="currentStep > 2" step="2"
+        >Choose a file</v-stepper-step
+      >
+      <v-stepper-content step="2">
+        <v-file-input
+          show-size
+          v-if="mode === 'encryption'"
+          accept="*/*"
+          label="File input"
+          :rules="[validationRules.required]"
+          @change="selectFile"
+        ></v-file-input>
+        <v-file-input
+          show-size
+          v-if="mode === 'decryption'"
+          accept=".enc"
+          label="File input"
+          :rules="[validationRules.required]"
+          @change="selectFile"
+        ></v-file-input>
+        <v-btn color="primary" @click="currentStep = 3" :disabled="!fileValid"
+          >Continue</v-btn
+        >
+        <span></span>
+        <v-btn text @click="currentStep = 1">Cancel</v-btn>
+      </v-stepper-content>
+    </v-form>
 
-    <v-stepper-content step="2">
-      <v-file-input
-        show-size
-        label="File input"
-        @change="selectFile"
-      ></v-file-input>
-      <v-btn color="primary" @click="currentStep = 3">Continue</v-btn>
-      <span></span>
-      <v-btn text @click="currentStep = 1">Cancel</v-btn>
-    </v-stepper-content>
-
-    <v-stepper-step :complete="currentStep > 3" step="3">
-      Enter a password
-    </v-stepper-step>
-
-    <v-stepper-content step="3">
-      <v-text-field
-        v-model="password"
-        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-        :rules="[passwordRules.required, passwordRules.min]"
-        :type="showPassword ? 'text' : 'password'"
-        name="input-10-1"
-        label="Password"
-        counter
-        @click:append="showPassword = !showPassword"
-      ></v-text-field>
-      <v-btn color="primary" @click="encryptOrDecryptSelectedFile">
-        Continue
-      </v-btn>
-      <v-btn text @click="currentStep = 2">Cancel</v-btn>
-    </v-stepper-content>
+    <v-form v-model="passwordValid">
+      <v-stepper-step :complete="currentStep > 3" step="3">
+        Enter a password
+      </v-stepper-step>
+      <v-stepper-content step="3">
+        <v-text-field
+          v-model="password"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :rules="[validationRules.required, validationRules.minLength]"
+          :type="showPassword ? 'text' : 'password'"
+          name="input-10-1"
+          label="Password"
+          counter
+          @click:append="showPassword = !showPassword"
+        ></v-text-field>
+        <v-btn
+          color="primary"
+          @click="encryptOrDecryptSelectedFile"
+          :disabled="!passwordValid"
+        >
+          Continue
+        </v-btn>
+        <v-btn text @click="currentStep = 2">Cancel</v-btn>
+      </v-stepper-content>
+    </v-form>
 
     <v-stepper-step step="4">Download file</v-stepper-step>
     <v-stepper-content step="4">
@@ -67,10 +86,12 @@ export default {
       selectedFile: undefined,
       encryptedFile: undefined,
       decryptedFile: undefined,
+      fileValid: false,
+      passwordValid: false,
       showPassword: false,
-      passwordRules: {
+      validationRules: {
         required: (value) => !!value || 'Required',
-        min: (v) => v.length >= 8 || 'Min 8 characters',
+        minLength: (v) => v.length >= 8 || 'Min 8 characters',
       },
     }
   },
@@ -104,7 +125,15 @@ export default {
       link.click()
       document.body.removeChild(link)
       window.URL.revokeObjectURL(url)
-      window.location.reload(false)
+      this.resetState()
+    },
+    resetState() {
+      this.mode = ''
+      this.currentStep = 1
+      this.password = ''
+      this.selectedFile = undefined
+      this.encryptedFile = undefined
+      this.decryptedFile = undefined
     },
     fileToDownload() {
       if (this.mode === 'encryption') {
